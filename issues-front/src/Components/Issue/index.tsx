@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, RouteComponentProps } from 'react-router-dom';
 import { backendUrl } from '../../constants';
 import axios from 'axios';
+type IIssue = {
+  id: number,
+  name: string,
+  // eslint-disable-next-line camelcase
+  cover_image: string,
+  description: string
+}
 
-const Issue = ({ history }: any) => {
+const Issue : React.FC<RouteComponentProps> = ({ history }) => {
   const location = useLocation();
-  const filteredlocation = location.pathname.split('/')[2];
+  const filteredlocation : string = location.pathname.split('/')[2];
+  const [data, setData] = useState<Array<IIssue>>([]);
+  const [error, setError] = useState<boolean>(false);
 
-  const [data, setData] = useState<any>([]);
-  const [error, setError] = useState<any>(false);
-
-  const goBack = () => {
+  const goBack = () : void => {
     history.push('/home');
   };
 
-  const getIssue = () => {
+  const getIssue = () : void => {
     axios.get(`${backendUrl}/issues/${filteredlocation}`)
       .then(res => {
         if (res.status === 400) {
           setError(true);
         } else if (res.status === 200) {
-          setData((state: any) => [...state, res?.data]);
+          setData((state: Array<IIssue>) => [...state, res?.data]);
         }
       }).catch(() => {
         setError(true);

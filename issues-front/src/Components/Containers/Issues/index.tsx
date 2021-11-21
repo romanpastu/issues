@@ -3,46 +3,70 @@ import './IssueContainer.css';
 import { RouteComponentProps } from 'react-router-dom';
 import axios from 'axios';
 import { backendUrl } from '../../../constants';
+import { splitArray } from '../../../helpers';
+import { useInput } from '../../../hooks';
 
-function splitArray (flatArray: any, itemsPerPage: any) {
-  const result = flatArray.reduce((resultArray: any, item: any, index: any) => {
-    const chunkIndex = Math.floor(index / itemsPerPage);
-    if (!resultArray[chunkIndex]) {
-      resultArray[chunkIndex] = [];
-    }
-    resultArray[chunkIndex].push(item);
-    return resultArray;
-  }, []);
-  return result;
+type IIssue = {
+  id: number,
+  name: string,
+  // eslint-disable-next-line camelcase
+  cover_image: string,
+  description: string
 }
 
-function useInput ({ type }: any) {
-  const [value, setValue] = useState('');
-  const input = <input value={value} onChange={e => setValue(e.target.value)} type={type} />;
-  return [value, input];
-}
-
-const IssuesItems: React.FC<RouteComponentProps> = function ({ history }) {
-  const [data, setData] = useState<any>([]);
-  const [error, setError] = useState<any>(false);
-  const [fetched, setFetched] = useState<any>(false);
-  const [loaded, setLoaded] = useState<any>(false);
+const IssuesItems: React.FC<RouteComponentProps> = ({ history }) => {
+  const [data, setData] = useState<Array<Array<IIssue>>>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [fetched, setFetched] = useState<boolean>(false);
+  const [loaded, setLoaded] = useState<boolean>(false);
   const [paginatedIssues, setPaginatedIssues] = useState<any>([]);
-  const [currentPage, setCurrentPage] = useState<any>(1);
-  const [itemsPerPage] = useState<any>(13);
-  const [numberOfPages, setNumberOfPages] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage] = useState<number>(13);
+  const [numberOfPages, setNumberOfPages] = useState<null | number>(null);
   const [searchValue, searchInput] = useInput({ type: 'text' });
-  const [keywords, setKeywords] = useState<any>([]);
+  const [keywords, setKeywords] = useState<Array<string>>([]);
 
-  const getIssues = (keywords?: any) => {
+  const resetStates = () : void => {
     setLoaded(false);
     setFetched(false);
     setError(false);
     setNumberOfPages(null);
     setData([]);
     setPaginatedIssues([]);
+  };
 
-    let url = `${backendUrl}/issues`;
+  const search = () : void => {
+    const searchValues : Array<string> = searchValue.toString().split(',').map(s => s.trim());
+    setKeywords((oldArr:Array<string>) => [...oldArr, ...searchValues]);
+  };
+
+  const firstPage = () : void => {
+    setCurrentPage(1);
+  };
+
+  const nextPage = () : void => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const previousPage = () : void => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  const lastPage = () : void => {
+    if (numberOfPages) {
+      setCurrentPage(numberOfPages);
+    };
+  };
+
+  const redirect = (id: string) : void => {
+    if (!id) return undefined;
+    history.push('/issue/' + id);
+  };
+
+  const getIssues = (keywords? : Array<string>) => {
+    resetStates();
+
+    let url : string = `${backendUrl}/issues`;
     if (keywords) {
       url += `?q=${keywords.toString()}`;
     }
@@ -62,14 +86,8 @@ const IssuesItems: React.FC<RouteComponentProps> = function ({ history }) {
   };
 
   useEffect(() => {
-    // set the number of pages
     getIssues();
   }, []);
-
-  const search = () => {
-    const searchValues = searchValue.toString().split(',').map(s => s.trim());
-    setKeywords((oldArr: any) => [...oldArr, ...searchValues]);
-  };
 
   useEffect(() => {
     if (keywords.length > 0) {
@@ -91,27 +109,6 @@ const IssuesItems: React.FC<RouteComponentProps> = function ({ history }) {
       setLoaded(true);
     }
   }, [numberOfPages]);
-
-  const firstPage = () => {
-    setCurrentPage(1);
-  };
-
-  const nextPage = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const previousPage = () => {
-    setCurrentPage(currentPage - 1);
-  };
-
-  const lastPage = () => {
-    setCurrentPage(numberOfPages);
-  };
-
-  const redirect = (id: string) => {
-    if (!id) return undefined;
-    history.push('/issue/' + id);
-  };
 
   return (
     <div>
