@@ -4,3 +4,6 @@
 1. clone the project
 2. navigate to `server` folder, and run `npm i && npm run start` . This will start the server on port 1234
 3. navigate to `issues-front` folder, and run `npm i && npm run start` . This will open the website in localhost:3000
+
+### Searchbox:
+The searchbox detects "," (coma) separated values. You must press the button to submit the query.
