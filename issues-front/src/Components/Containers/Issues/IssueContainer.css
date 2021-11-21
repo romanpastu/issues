@@ -35,4 +35,23 @@
   .mainCardsContainer{
     background-color:  rgb(236, 234, 218);
     min-height: 100vh;
+    height:100%;
+  }
+
+  @media only screen and (max-width: 800px) {
+    .article-img {
+      height: 40vh;
+      width: 100%;
+      object-fit: cover;
+    }
+    
+    .article-title {
+      display:none
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
