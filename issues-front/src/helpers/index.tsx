@@ -1,6 +1,14 @@
-export const splitArray = (flatArray: any, itemsPerPage: any) => {
-  const result = flatArray.reduce((resultArray: any, item: any, index: any) => {
-    const chunkIndex = Math.floor(index / itemsPerPage);
+type IIssue = {
+    id: number,
+    name: string,
+    // eslint-disable-next-line camelcase
+    cover_image: string,
+    description: string
+}
+
+export const splitArray = (flatArray: Array<IIssue>, itemsPerPage: number) => {
+  const result = flatArray.reduce((resultArray: Array<Array<IIssue>>, item: IIssue, index: number) => {
+    const chunkIndex : number = Math.floor(index / itemsPerPage);
     if (!resultArray[chunkIndex]) {
       resultArray[chunkIndex] = [];
     }

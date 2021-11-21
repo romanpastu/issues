@@ -1,3 +1,5 @@
+/* eslint-disable no-debugger */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import './IssueContainer.css';
 import { RouteComponentProps } from 'react-router-dom';
@@ -15,11 +17,11 @@ type IIssue = {
 }
 
 const IssuesItems: React.FC<RouteComponentProps> = ({ history }) => {
-  const [data, setData] = useState<Array<Array<IIssue>>>([]);
+  const [data, setData] = useState<Array<IIssue>>();
   const [error, setError] = useState<boolean>(false);
   const [fetched, setFetched] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [paginatedIssues, setPaginatedIssues] = useState<any>([]);
+  const [paginatedIssues, setPaginatedIssues] = useState<Array<Array<IIssue>>>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(13);
   const [numberOfPages, setNumberOfPages] = useState<null | number>(null);
@@ -76,7 +78,7 @@ const IssuesItems: React.FC<RouteComponentProps> = ({ history }) => {
           setError(true);
           setKeywords([]);
         } else if (res.status === 200) {
-          setData((state: any) => [...state, res?.data]);
+          setData((state: any) => [...state, res?.data][0]);
           setFetched(true);
           setKeywords([]);
         }
@@ -96,15 +98,15 @@ const IssuesItems: React.FC<RouteComponentProps> = ({ history }) => {
   }, [keywords]);
 
   useEffect(() => {
-    if (fetched) {
-      const numberOfPages = Math.ceil(data[0].length / itemsPerPage);
+    if (fetched && data) {
+      const numberOfPages : number = Math.ceil(data.length / itemsPerPage);
       setNumberOfPages(numberOfPages);
     }
   }, [fetched]);
 
   useEffect(() => {
-    if (numberOfPages != null) {
-      const newArr = splitArray(data[0], itemsPerPage);
+    if (numberOfPages != null && data) {
+      const newArr : IIssue[][] = splitArray(data, itemsPerPage);
       setPaginatedIssues((oldArr: any) => [...oldArr, newArr][0]);
       setLoaded(true);
     }
@@ -127,12 +129,12 @@ const IssuesItems: React.FC<RouteComponentProps> = ({ history }) => {
               );
             })}
           </section>
-          <div>
+          {paginatedIssues?.length > 0 && <div>
             <button onClick={firstPage} disabled={currentPage === 1}>First page</button>
             <button onClick={nextPage} disabled={currentPage === numberOfPages}>Next Page</button>
             <button onClick={previousPage} disabled={currentPage === 1}>Previous Page</button>
             <button onClick={lastPage} disabled={currentPage === numberOfPages}>Last Page</button>
-          </div>
+          </div>}
         </>
         : <p>loading</p>
       }
