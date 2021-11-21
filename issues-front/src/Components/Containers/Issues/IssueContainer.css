@@ -1,0 +1,30 @@
+/* Grid styles -------------------------------------------------*/
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 30px;
+  }
+
+
+.cards {
+    max-width: 90vw;
+    margin: 0 auto;
+  }
+  
+  article {
+    position: relative;
+  }
+  
+  .article-img {
+    height: 30vh;
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  .article-title {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 1vh;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
