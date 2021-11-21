@@ -1,28 +1,49 @@
-import React from 'react';
-import issuesJson from '../../mockData/issues.json';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { backendUrl } from '../../constants';
+import axios from 'axios';
 
-// slug console-34595-146303
-
-const Issue = ({ history } : any) => {
+const Issue = ({ history }: any) => {
   const location = useLocation();
   const filteredlocation = location.pathname.split('/')[2];
-  const toDisplayEl = issuesJson.filter(i => i.slug === filteredlocation)[0];
+
+  const [data, setData] = useState<any>([]);
+  const [error, setError] = useState<any>(false);
 
   const goBack = () => {
     history.push('/home');
   };
 
+  const getIssue = () => {
+    axios.get(`${backendUrl}/issues/${filteredlocation}`)
+      .then(res => {
+        if (res.status === 400) {
+          setError(true);
+        } else if (res.status === 200) {
+          setData((state: any) => [...state, res?.data]);
+        }
+      }).catch(() => {
+        setError(true);
+      });
+  };
+
+  useEffect(() => {
+    getIssue();
+  }, []);
+
   return (
     <>
-      <p>This is the issue {filteredlocation}</p>
-      <div>
-        <img className="article-img" src={toDisplayEl.cover_image} alt={toDisplayEl.name} />
-        <p>Title: {toDisplayEl.name}</p>
-        <p>Description: {toDisplayEl.description}</p>
-        <button onClick={goBack}>goBack</button>
-      </div>
-    </>
+      {data && data.length > 0 && !error
+        ? <>
+        <img className="article-img" src={data[0].cover_image} alt={data[0].name} />
+        <p>Title: {data[0].name}</p>
+        <p>Description: {data[0].description}</p>
+        </>
+        : <p>404 not found</p>
+      }
+      <button onClick={goBack}>goBack</button>
+
+  </>
   );
 };
 
