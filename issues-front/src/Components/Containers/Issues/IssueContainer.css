@@ -21,11 +21,7 @@
   }
   
   .article-title {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 1vh;
-    background-color: rgba(255, 255, 255, 0.2);
+    display: none;
   }
 
   button{
