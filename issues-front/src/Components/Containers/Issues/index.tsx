@@ -1,5 +1,3 @@
-/* eslint-disable no-debugger */
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import './IssueContainer.css';
 import { RouteComponentProps } from 'react-router-dom';
@@ -7,7 +5,8 @@ import axios from 'axios';
 import { backendUrl } from '../../../constants';
 import { splitArray } from '../../../helpers';
 import { useInput } from '../../../hooks';
-
+import IssueArticle from '../../IssueArticle/index';
+import Pagination from '../../Pagination/index';
 type IIssue = {
   id: number,
   name: string,
@@ -120,21 +119,27 @@ const IssuesItems: React.FC<RouteComponentProps> = ({ history }) => {
           <section className="cards">
             {paginatedIssues?.length > 0 && paginatedIssues[currentPage - 1]?.length > 0 && paginatedIssues[currentPage - 1].map((i: any) => {
               return (
-                <article key={i.slug} onClick={() => redirect(i.id)}>
-                  <img className="article-img" src={i.cover_image} alt={i.name} />
-                  <h1 className="article-title">
-                    {i.name}
-                  </h1>
-                </article>
+                <IssueArticle
+                  slug={i.slug}
+                  redirect={redirect}
+                  id={i.id}
+                  cover_image={i.cover_image}
+                  name={i.name}
+                  key={i.slug + Math.random().toString()}
+                />
               );
             })}
           </section>
-          {paginatedIssues?.length > 0 && <div>
-            <button onClick={firstPage} disabled={currentPage === 1}>First page</button>
-            <button onClick={nextPage} disabled={currentPage === numberOfPages}>Next Page</button>
-            <button onClick={previousPage} disabled={currentPage === 1}>Previous Page</button>
-            <button onClick={lastPage} disabled={currentPage === numberOfPages}>Last Page</button>
-          </div>}
+          {paginatedIssues?.length && numberOfPages !== null && numberOfPages > 0 &&
+          <Pagination
+            firstPage={firstPage}
+            nextPage={nextPage}
+            previousPage={previousPage}
+            lastPage={lastPage}
+            currentPage={currentPage}
+            numberOfPages={numberOfPages}
+          />
+         }
         </>
         : <p>loading</p>
       }
