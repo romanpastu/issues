@@ -9,7 +9,6 @@
     max-width: 90vw;
     margin: 0 auto;
   }
-  
   article {
     position: relative;
     cursor:pointer;
@@ -31,4 +30,13 @@
 
   button{
     cursor:pointer;
+  }
+
+  button{
+    cursor:pointer;
+  }
+
+  .mainCardsContainer{
+    background-color:  rgb(236, 234, 218);
+    min-height: 100vh;
   }

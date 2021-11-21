@@ -7,6 +7,7 @@ import { splitArray } from '../../../helpers';
 import { useInput } from '../../../hooks';
 import IssueArticle from '../../IssueArticle/index';
 import Pagination from '../../Pagination/index';
+import Search from '../../Search/index';
 type IIssue = {
   id: number,
   name: string,
@@ -112,8 +113,11 @@ const IssuesItems: React.FC<RouteComponentProps> = ({ history }) => {
   }, [numberOfPages]);
 
   return (
-    <div>
-      {searchInput} <button onClick={search}>search</button>
+    <div className='mainCardsContainer'>
+      <Search
+        searchInput={searchInput}
+        search={search}
+      />
       {!error && loaded
         ? <>
           <section className="cards">
