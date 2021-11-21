@@ -53,7 +53,7 @@ const Issue: React.FC<RouteComponentProps> = ({ history }) => {
           <p>404 not found</p>
         </div>
       }
-      <button className="custom-btn btn1" onClick={goBack}>Go back</button>
+      <button className="custom-btn btn-1" onClick={goBack}>Go back</button>
     </div>
 
   );
